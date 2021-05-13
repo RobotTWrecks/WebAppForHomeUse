@@ -13,7 +13,7 @@ def make_random_yml_token(length):
     chars = ''.join([chr(i) for i in range(33, 122)])
     token = ''.join([random.choice(chars) for _ in range(length)])
     # Keep making tokens until get a good one.
-    while token[0] in ',@&*#->!':
+    while token[0] in ',@&*#->!':  # TODO filter tokens better then this
         token = ''.join([random.choice(chars) for _ in range(length)])
     return token
 
