@@ -7,7 +7,7 @@ A web app that helps with every day life. I add to it as I want more functionali
 * It will generate config.yml which will have a random default admin password in it.
   * user: admin
   * password: `<in config.yml>` 
-* Login as admin and the default password.
+* Login as admin and update the default password.
 
 ## Adding users
 * As the admin, go to settings > Add user
