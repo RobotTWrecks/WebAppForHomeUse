@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+<legend class="border-bottom mb-4">
+    Items
+</legend>
+
+<div class="form-group mb-0">
+    <form method="POST" action="{{ url_for('listApp') }}">
+        <div class="input-group">
+            {{ sortForm.sortOptions(class="custom-select") }}
+            <div class="input-group-append">
+                {{ sortForm.applyButton(class="btn btn-outline-info btn-sm") }}
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="form-group  mb-0">
+    <form method="POST" action="{{ url_for('itemAction') }}">
+        <div class="form-group">
+            
+            {{ itemForm.hidden_tag() }}
+            <br>
+            {% for post in posts %}
+                <h5>
+                    <u>
+                        <strong>
+                            {{post.username}} 
+                        </strong>
+                        <small>
+                            [{{dateConversion(post.dateAdded)}}]
+                        </small>
+                    </u>
+                    <br>
+                    {{ itemForm.box(value=post.iid)}} {{ post.item }}
+                </h5>
+                <br>
+            {% endfor %}
+        </div>
+
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Add an Item</legend>
+            <div class="form-group">
+                {% if itemForm.text.errors %}
+                    {{ itemForm.text(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.text.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ itemForm.text(class="form-control form-control-lg", autocomplete="off") }}
+                {% endif %} 
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ itemForm.submitAdd(class="btn btn-outline-info") }} 
+            {{ itemForm.submitDel(class="btn btn-outline-danger") }} 
+        </div>
+    </form>
+</div>
+{% endblock content %}
+

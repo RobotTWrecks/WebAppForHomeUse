@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <h3>Hello {{ current_user.username }}</h3>
+        <h5>Post count: {{current_user.postCount}}</h5>
+        <legend class="border-bottom mb-4">Removed Items</legend>
+        <div class="form-group">
+            {% for items in removedItemsList %}
+                <p>
+                    <u>
+                        Added: <strong>{{items.addedBy}}</strong>
+                        <small> [{{dateConversion(items.dateAdded)}}]</small>
+                    </u>
+                    <br>
+                    <u>
+                        Removed: <strong>{{items.removedBy}}</strong>
+                        <small> [{{dateConversion(items.dateRemoved)}}]</small>
+                    </u>
+                    <br>
+                    {{ items.item }}
+                </p>
+                <br>
+            {% endfor %}
+        </div>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<legend class="border-bottom mb-4">
+    Login log
+</legend>
+{% if current_user.isAdmin == 'true' %}
+    <div class="form-group mb-2">
+        <form method="POST" action="{{ url_for('loginLog') }}">
+            <div class="input-group">
+                {{ sortForm.sortOptions(class="custom-select") }}
+                <div class="input-group-append">
+                    {{ sortForm.applyButton(class="btn btn-outline-info btn-sm") }}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endif %}
+
+<div class="form-group">
+    <a class="btn btn-outline-info" href="{{ url_for('settings') }}">Back</a>
+</div>
+
+<div class="mb-4">
+    {% for row in sessions %}
+        <div class="card mb-1">
+            <div class="card-body">
+                <h5 class="card-title">{{ row.username }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Date: {{ epochToDate(row.issueddate) }}</h6>
+                <h6 class="card-subtitle mb-2 text-muted">IP: {{ row.ip }}</h6>
+                <p class="card-text"><u>Useragent:</u> {{ row.useragent }}</p>
+            </div>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock content %}
+

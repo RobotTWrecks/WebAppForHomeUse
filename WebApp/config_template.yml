@@ -1,0 +1,9 @@
+
+Flask:
+  secret: {{ secret }}
+  database_name: database.db
+
+WebApp:
+  title: WebApp
+  default_admin_password: {{ default_admin_password }}
+
