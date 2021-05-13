@@ -6,6 +6,9 @@ from WebApp.forms import RegistrationForm, LogInForm, ItemForm, SortDropDown, In
     ChangeUsername, ChangePassword, DeleteAccount
 from WebApp.models import User, Items
 
+# TODO Add work out tracking
+# TODO Add youtube-dl app
+# TODO add a menu on the index page
 
 # user can make an account
 @app.route("/register", methods=['GET', 'POST'])
