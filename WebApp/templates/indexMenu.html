@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <legend class="border-bottom mb-4">
+        App menu
+    </legend>
+    <div class="list-group">
+        <a href="{{ url_for('listApp') }}" class="list-group-item list-group-item-action list-group-item-custom-blue">
+            Todo List
+        </a>
+
+        <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action list-group-item-custom-blue">
+            Workout Tracking (not implemented)
+        </a>
+
+        <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action list-group-item-custom-blue">
+            Music Playlist download (not implemented)
+        </a>
+    </div>
+
+    <legend class="border-bottom mt-4 mb-4"></legend>
+
+    <div class="list-group">
+        <a href="{{ url_for('logout') }}" class="list-group-item list-group-item-action list-group-item-info">
+            Logout
+        </a>
+    </div>
+{% endblock content %}

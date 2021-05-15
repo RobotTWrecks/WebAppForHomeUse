@@ -6,6 +6,7 @@ from WebApp.forms import RegistrationForm, LogInForm, ItemForm, SortDropDown, In
     ChangeUsername, ChangePassword, DeleteAccount
 from WebApp.models import User, Items
 
+
 # TODO Add work out tracking
 # TODO Add youtube-dl app
 # TODO add a menu on the index page
@@ -40,9 +41,10 @@ def register():
                 # Send them to the login
                 return redirect(url_for('login'))
             # TODO be more helpful?
-            except:
+            except Exception as err:
                 # Undo if it broke
                 db.session.rollback()
+                print(err)
                 flash('Your account has not been created', 'danger')
         else:
             flash('Invite Key is not in the list. Contact the admin to add one.', 'warning')
@@ -97,16 +99,18 @@ def logout():
     return redirect(url_for('login'))
 
 
-# index page redirects the user to the right place
+# index page
 @app.route("/index")
 @app.route("/", methods=['GET'])
 def index():
-    # Check user is logged in, move them to the app
-    if current_user.is_authenticated:
-        return redirect(url_for('listApp'))
-    # If they are not logged in, make them log in
-    else:
+    # Check user is logged in
+    if not current_user.is_authenticated:
         return redirect(url_for('login'))
+
+    # Give the user the menu
+    return render_template('indexMenu.html',
+                           webAppTitle=config_file['WebApp']['title'])
+
 
 
 # list app page

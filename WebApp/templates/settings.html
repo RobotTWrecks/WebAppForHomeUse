@@ -16,11 +16,11 @@
                 (All Users)
             {% endif %}
         </a>
-        {% if current_user.isAdmin == 'true' %}
+
         <a href="{{ url_for('addInviteKey') }}" class="list-group-item list-group-item-action list-group-item-custom-blue">
             Add Invite Key
         </a>
-        {% endif %}
+
         <a href="{{ url_for('logout') }}" class="list-group-item list-group-item-action list-group-item-custom-blue">
             Logout
         </a>

@@ -166,12 +166,12 @@ def removeItem(itemID, removedByUid):
             db.session.delete(myitem)
             db.session.commit()
     # TODO catch errors and be more helpful
-    except:
+    except Exception as err:
         db.session.rollback()
+        print(err)
 
 
 def checkDefaultPassword():
-    # TODO get default password
     # Get config
     config_file = confuse.Configuration('WebApp', __name__)
     config_file.set_file('config.yml')
