@@ -1,6 +1,11 @@
 # WebAppForHomeUse
 A web app that helps with every day life. I add to it as I want more functionality.
 
+### TODO
+* Add more pages
+  * A playlist downloader using youtube-dl
+  * Running Tracker
+
 ## Running
 * Install the requirements from requirements.txt
 * Run `python3 run.py <IP> <PORT>` in the project folder
