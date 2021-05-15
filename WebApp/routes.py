@@ -9,7 +9,6 @@ from WebApp.models import User, Items
 
 # TODO Add work out tracking
 # TODO Add youtube-dl app
-# TODO add a menu on the index page
 
 # user can make an account
 @app.route("/register", methods=['GET', 'POST'])
@@ -110,7 +109,6 @@ def index():
     # Give the user the menu
     return render_template('indexMenu.html',
                            webAppTitle=config_file['WebApp']['title'])
-
 
 
 # list app page
