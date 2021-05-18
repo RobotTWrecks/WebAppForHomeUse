@@ -1,11 +1,10 @@
+from . import app, db, bcrypt, inviteKeyList, config_file
+from .utilities import getEpoch, epochToDate, logUser, removeItem, no_Default_Admin_Password
+from .models import User, Items
+from .forms import RegistrationForm, LogInForm, ItemForm, SortDropDown, InviteKey, \
+    ChangeUsername, ChangePassword, DeleteAccount
 from flask import render_template, url_for, flash, redirect, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
-from WebApp import app, db, bcrypt, inviteKeyList, config_file
-from WebApp.functions import getEpoch, epochToDate, logUser, removeItem, checkDefaultPassword
-from WebApp.forms import RegistrationForm, LogInForm, ItemForm, SortDropDown, InviteKey, \
-    ChangeUsername, ChangePassword, DeleteAccount
-from WebApp.models import User, Items
-
 
 # TODO Add work out tracking
 # TODO Add youtube-dl app
@@ -60,9 +59,10 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('listApp'))
 
-    # Tell the user how to do a first time login
-    if checkDefaultPassword() and request.method != 'POST':
-        flash('Log in as "admin" and use default password found in config.yml', 'info')
+    #TODO remove
+    #Tell the user how to do a first time login
+    #if noDefaultAdminPassword() and request.method != 'POST':
+    #    flash('Log in as "admin" and use default password found in config.yml', 'info')'''
 
     # login get Login Form
     form = LogInForm()
@@ -70,11 +70,6 @@ def login():
     if form.validate_on_submit():
         # Get User using username
         user = User.query.filter_by(username=form.username.data).first()
-
-        # Check First time login. This only lets the admin login
-        if checkDefaultPassword() and form.username.data != 'admin':
-            logout_user()
-            flash('Admin needs to change the default password before others login', 'warning')
 
         # Check password
         if user and bcrypt.check_password_hash(user.password, form.password.data):
@@ -114,17 +109,8 @@ def index():
 # list app page
 @app.route("/listApp", methods=['GET', 'POST'])
 @login_required
+@no_Default_Admin_Password
 def listApp():
-    # Check first time run
-    if checkDefaultPassword():
-        if current_user.username == "admin":
-            flash('Change the admin\'s default password', 'info')
-            return redirect(url_for('changePassword'))
-        else:
-            logout_user()
-            flash('Admin needs to change the default password before others login', 'warning')
-            return redirect(url_for('login'))
-
     # Forms
     sortForm = SortDropDown()
     itemForm = ItemForm()
@@ -214,17 +200,8 @@ def loginLog():
 # Menu for settings
 @app.route("/settings", methods=['POST', 'GET'])
 @login_required
+@no_Default_Admin_Password
 def settings():
-    # Check first time run
-    if checkDefaultPassword():
-        if current_user.username == "admin":
-            flash('Change the admin\'s default password', 'info')
-            return redirect(url_for('changePassword'))
-        else:
-            logout_user()
-            flash('Admin needs to change the default password before others login', 'warning')
-            return redirect(url_for('login'))
-
     # Show page to the user
     return render_template('settings.html',
                            webAppTitle=config_file['WebApp']['title'])
@@ -233,6 +210,7 @@ def settings():
 # Page for username update
 @app.route("/usernameChange", methods=['POST', 'GET'])
 @login_required
+@no_Default_Admin_Password
 def changeUserName():
     form = ChangeUsername()
     if form.validate_on_submit() and form.username.data != current_user.username:
@@ -308,17 +286,8 @@ def deleteAccount():
 
 @app.route("/addInviteKey", methods=['POST', 'GET'])
 @login_required
+@no_Default_Admin_Password
 def addInviteKey():
-    # Check first time run
-    if checkDefaultPassword():
-        if current_user.username == "admin":
-            flash('Change the admin\'s default password', 'info')
-            return redirect(url_for('changePassword'))
-        else:
-            logout_user()
-            flash('Admin needs to change the default password before others login', 'warning')
-            return redirect(url_for('login'))
-
     form = InviteKey()
     if form.validate_on_submit():
         if bcrypt.check_password_hash(current_user.password, form.password.data):
@@ -331,3 +300,27 @@ def addInviteKey():
                            webAppTitle=config_file['WebApp']['title'],
                            keys=inviteKeyList,
                            form=form)
+
+
+# list app page
+@app.route("/runningApp", methods=['GET', 'POST'])
+@login_required
+@no_Default_Admin_Password
+def runningApp():
+    # Forms
+    sortForm = SortDropDown()
+    itemForm = ItemForm()
+    # Check how the user wants to sort
+    if sortForm.sortOptions.data == "newDate":
+        itemsWithUsernames = db.session.execute('select * from itemsPage order by dateAdded DESC')
+    elif sortForm.sortOptions.data == "userName":
+        itemsWithUsernames = db.session.execute('select * from itemsPage order by username')
+    else:
+        itemsWithUsernames = db.session.execute('select * from itemsPage order by dateAdded ASC')
+    return render_template('listApp.html',
+                           webAppTitle=config_file['WebApp']['title'],
+                           title='List',
+                           itemForm=itemForm,
+                           sortForm=sortForm,
+                           dateConversion=epochToDate,
+                           posts=itemsWithUsernames)
