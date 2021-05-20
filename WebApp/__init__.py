@@ -43,6 +43,7 @@ config_file.set_file('config.yml')
 app.config['SECRET_KEY'] = config_file['Flask']['secret'].get(str)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{ config_file['Flask']['database_name'].get(str) }"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['TEST'] = 'cool test'
 
 # a place for holding invite keys
 inviteKeyList = []
@@ -59,12 +60,12 @@ dbPath = path.abspath("WebApp/" + config_file['Flask']['database_name'].get(str)
 
 # Make the database if there isn't one
 if not path.exists(dbPath):
-    from WebApp import functions
-    functions.makeDB()
+    from . import utilities
+    utilities.makeDB()
 
 #  We have to do it this way I guess
 #  https://flask.palletsprojects.com/en/1.1.x/patterns/packages/
-from WebApp import routes
+from . import routes
 
 
 

@@ -1,9 +1,14 @@
-from WebApp import db, bcrypt
-from WebApp.models import User, Sessions, RemovedItems, Items
+from . import db, bcrypt
+from .models import User, Sessions, RemovedItems, Items
+from .models import User, Items, RemovedItems
 from datetime import datetime
-from WebApp.models import User, Items, RemovedItems
 import time
 import confuse
+from functools import wraps
+from flask import flash, redirect, url_for
+from flask_login.utils import current_user
+from flask_login import logout_user
+
 
 '''
 Gets the seconds since epoch
@@ -171,18 +176,33 @@ def removeItem(itemID, removedByUid):
         print(err)
 
 
-def checkDefaultPassword():
-    # Get config
-    config_file = confuse.Configuration('WebApp', __name__)
-    config_file.set_file('config.yml')
+def no_Default_Admin_Password(func):
+    '''
+    If you decorate a view with this, it will make sure the admin cannot have the
+    default password
 
-    # get the admin
-    user = User.query.filter_by(username='admin').first()
+    :param func: The view function to decorate.
+    :return: function
+    '''
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        # TODO, change how the default password retrieved
+        # Get config
+        config_file = confuse.Configuration('WebApp', __name__)
+        config_file.set_file('config.yml')
 
-    # Check password
-    if user and bcrypt.check_password_hash(user.password, config_file['WebApp']['default_admin_password'].get(str)):
-        return True
-    else:
-        return False
+        # get the admin
+        user = User.query.filter_by(username='admin').first()
 
+        # Check password
+        if user and bcrypt.check_password_hash(user.password, config_file['WebApp']['default_admin_password'].get(str)):
+            if current_user.username == "admin":
+                flash('Change the admin\'s default password', 'info')
+                return redirect(url_for('changePassword'))
+            else:
+                logout_user()
+                flash('Admin needs to change the default password before others login', 'warning')
+                return redirect(url_for('login'))
+        return func(*args, **kwargs)
+    return decorated_function
 
