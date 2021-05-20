@@ -24,8 +24,9 @@ Converts an epoch time stamp to a readable date
 def epochToDate(epoch):
     return datetime.fromtimestamp(epoch).strftime('%Y-%m-%d %H:%M')
 
-
-# Make the admin
+'''
+Make the admin
+'''
 def makeAdmin():
     # get one-time default password
     config_file = confuse.Configuration('WebApp', __name__)
