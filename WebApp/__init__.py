@@ -43,7 +43,6 @@ config_file.set_file('config.yml')
 app.config['SECRET_KEY'] = config_file['Flask']['secret'].get(str)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{ config_file['Flask']['database_name'].get(str) }"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['TEST'] = 'cool test'
 
 # a place for holding invite keys
 inviteKeyList = []
